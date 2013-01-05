@@ -20,8 +20,100 @@ App.Medication = Ember.Object.extend({
     nightDosage: undefined,
     
     /* Other conditions */
-    useNumerals: false,
+    forceNumerals: false,
     asNeeded: false
+});
+
+App.Medication.reopenClass({
+   createFromEMRParse: function (emrMed) {
+       var med = App.Medication.create({
+           description: emrMed.med,
+           morningDosage: App.Dosage.create({ time: "morning", size: 0 }),
+           middayDosage: App.Dosage.create({ time: "midday", size: 0 }),
+           eveningDosage: App.Dosage.create({ time: "evening", size: 0. }),
+           nightDosage: App.Dosage.create({ time: "night", size: 0 })
+       });
+       
+       console.log("Working on ", emrMed.med, " with instructions ", emrMed.instructions);
+       
+       var instructions = emrMed.instructions;
+       var doseSize = 1; // Need to parse this shazzle
+
+       var containsAnyOf = function (s, phrases) {
+           var found = false;
+           phrases.forEach(function (phrase) {
+              found |= s.indexOf(phrase) !== -1;
+           });
+           return found;
+       }
+       
+       var instructionsContain = function (phrases) {
+           return containsAnyOf(instructions, phrases);
+       }
+       
+       var takeInThe = function (time) {
+           console.log("Gonna take ", doseSize, " of ", med.get('description'), " in the ", time);
+           med.get(time + "Dosage").set("size", doseSize);
+       }
+       
+       // Creamy stuff
+       if (instructionsContain(["apply", "cream", "ointment", "lotion", "shampoo", "gel"])) {
+           doseSize = 1;
+       }
+
+       // Does the doese timing contain a "before meals" style modifier?
+       beforeMeals = instructionsContain(["ac", "with meals", "before meals"]);
+       beforeMeal = instructionsContain(["ac", "with meal", "before meal", "with dinner", "before dinner"]);
+
+       // Dose timing
+       if (instructionsContain(["bid", "twice daily", "twice a day", "two times daily", "two times a day", "q12",  "q12h"])) {
+           takeInThe('morning');
+
+           if (beforeMeals) {
+               takeInThe('evening');
+           } else {
+               takeInThe('night');
+           }
+       } else if (instructionsContain(["qhs", "qpm", "each night", "every night", "each evening", "every evening", "at bedtime"])) {
+           if (beforeMeal) {
+               takeInThe('evening');
+           } else {
+               takeInThe('night');
+           }
+       } else if (instructionsContain(["tid", "q8", "q8h", "three times daily", "three times a day"])) {
+           takeInThe('morning');
+           takeInThe('midday');
+
+           if (beforeMeals) {
+               takeInThe('evening');
+           } else {
+               takeInThe('night');
+           }
+       } else if (instructionsContain(["qid", "q6", "q6h", "four times a day", "four times daily"])) {
+           takeInThe('morning');
+           takeInThe('midday');
+           takeInThe('evening');
+           takeInThe('night');
+       } else if (instructionsContain(["daily", "qam", "each morning", "every morning", "qday", "q24", "qdaily", "q24h"])) {
+           // This needs to be last because otherwise 'daily' would match 'twice daily', 'four times daily', etc
+           takeInThe('morning');
+       }
+
+       if (instructionsContain(["prn", "as needed"])) {
+           med.set('asNeeded', true);
+       }
+
+       // Should we display as graphics or as numerals?
+       if (instructionsContain(["inject"])) {
+           med.set('forceNumerals', true);
+       } /*else if (medication.dose.size.equalsAnyOf(0, 0.5, 1, 1.5, 2, 2.5, 3, 4)) {
+           medication.dose.displayAsGraphicalPills = true;
+       } else {
+           medication.dose.displayAsGraphicalPills = false;
+       }*/
+       
+       return med;
+   }
 });
 
 App.Allergy = Ember.Object.extend({
@@ -30,6 +122,15 @@ App.Allergy = Ember.Object.extend({
 
 App.Problem = Ember.Object.extend({
    description: "" 
+});
+
+App.Problem.reopenClass({
+   createFromEMRParse: function (emrProblem) {
+       var problem = App.Medication.create({
+           description: emrProblem.problem,
+       });
+       return problem;
+   }
 });
 
 App.MedCard = Ember.Object.extend({
@@ -90,18 +191,21 @@ App.MedCard = Ember.Object.extend({
         return [];
     }.property('medications'),
     notes: "",
-    insertEMRData: function (emrData) {
+    parseEMRData: function (emrData) {
+        /* First break the file into sections: allergies, problems, meds */
         var regex = /^([\s\S]*)ACTIVE PROBLEMS: ([\s\S]*)Outpatient Medications\s*=====================================================================([\s\S]*)$/;
-        window.emrData = emrData;
-        window.daRegex = regex;
-        
-        
         var match = regex.exec(emrData);
-        
         var allergies = match[1]
         var problems = match[2];
         var meds = match[3];
         
+        /* NOW: cleanup+parse each section: */
+        
+        /* Allergies */
+        allergies = allergies.replace(/[\n\f\r]+/g, " ");
+        allergies = allergies.split(", ");
+        
+        /* Problems */
         // Remove extraneous new-lines
         problems = problems.replace(/[\n\f\r]+/g, "\n");
         // Split based on '##. ' at the start of lines
@@ -126,6 +230,7 @@ App.MedCard = Ember.Object.extend({
            }
         });
         
+        /* Medications */
         // Remove extraneous new-lines
         meds = meds.replace(/[\n\f\r]+/g, "\n")
         // Collapse newlines inside a single med: continued lines are detected by leading four spaces
@@ -134,24 +239,48 @@ App.MedCard = Ember.Object.extend({
         meds = meds.split("\n");
         // Remove empty meds
         meds = meds.filter(function (x) { return x.length > 0 });
-        
+        // Now parse into med name and dosage instructions
         meds = meds.map(function (med) {
             var matches = med.match(/^(.*?)[.]  (.*)$/);
             if (matches) {
                 return {
                     med: matches[1],
-                    description: matches[2]
+                    instructions: matches[2]
                 }                
             } else {
                 return {
                    med: med,
-                   description: med
+                   instructions: med
                 }
             }
         });
         
-        window.meds = meds;
-        window.problems = problems;
+        return {
+            allergies: allergies,
+            problems: problems,
+            medications: meds
+        }
+    },
+    insertEMRData: function (emrDataString) {
+        var emrData = this.parseEMRData(emrDataString);
+        window.emrData = emrData;
+        
+        var allergies = this.get('allergies');
+        emrData.allergies.forEach(function (allergy) {
+           allergies.pushObject(App.Allergy.create({
+              description: allergy 
+           }));
+        });
+        
+        var medications = this.get('medications');
+        emrData.medications.forEach(function (med) {
+           medications.pushObject(App.Medication.createFromEMRParse(med)); 
+        });
+
+        var problems = this.get('problems');
+        emrData.problems.forEach(function (problem) {
+           problems.pushObject(App.Problem.createFromEMRParse(problem)); 
+        });
     }
 });
 
