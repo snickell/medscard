@@ -1,2 +1,1 @@
-medscard
-========
+Medical card generator.

@@ -1,0 +1,197 @@
+.med-card-editor {
+  border: 1px solid black;
+  border-bottom: 5px solid black;
+  margin-bottom: 2em;
+  padding: 30px;
+  background-color: white;
+  position: relative;
+  padding-top: 70px;
+}
+
+
+.med-card-editor .print-bar {
+  background-color: black;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  padding: 10px;
+  color: white;
+}
+
+.med-card-editor .print-bar h1 {
+  font-size: 30px;
+}
+
+.med-card-editor input.print {
+  position: absolute;
+  right: 30px;
+  font-size: 150%;
+  top: 0px;
+  bottom: 0px;
+  margin-top: auto;
+  margin-bottom: auto;
+  outline: 5px solid #999;
+}
+
+.med-card-editor .category {
+  margin-bottom: 1em;
+}
+
+.med-card-editor .category h2 {
+  margin-bottom: 0.25em;
+}
+
+.med-card-editor .category input.add-new {
+  margin-top: 0.5em;
+}
+
+.med-card-editor .category.notes textarea {
+  height: 2.5in;
+}
+
+.med-card-editor .medication-editor .medication input {
+  width: 18em;
+}
+
+.med-card-editor .medication-editor .dosage-editor input {
+  width: 2.8em;
+}
+
+.med-card {
+    color: black;
+}
+
+.med-card .page {
+    width: 7.5in;
+    height: 2.75in;
+    background-color: white;
+    page-break-before: always;
+    overflow: hidden;
+    margin-bottom: 1em;
+    border: 2pt solid black;
+}
+
+.med-card .page.second {
+    border-color: black;
+}
+
+.med-card .column {
+    width: 3.75in;
+    overflow: hidden;
+}
+
+.med-card .sub-column {
+    width: 1.675in;
+    padding: 0.1in;
+}
+
+.med-card .left {
+    float: left;
+}
+
+.med-card .right {
+    float: right;
+}
+
+.med-card .faceplate {
+    height: 2.75in;
+}
+
+.med-card .category {
+    margin-bottom: 1em;
+}
+
+.med-card .category h1 {
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.med-card .dose-chart {
+    height: 100%;
+    border-collapse:collapse;
+    border-bottom: 2pt solid black;
+}
+
+.med-card .dose-chart tr.even {
+    background: #f8f8f8 url('../images/even-row-background.png') repeat !important;
+}
+
+@media print {
+  .med-card .dose-chart tr.even {
+      background: #f8f8f8 url('../images/even-row-background.png') repeat !important;
+  }
+}
+
+.med-card .dose-chart th {
+    height: 10px;
+    overflow: hidden;
+}
+    
+.med-card .dose-chart th.dose {
+    width: 0.28in;
+}
+.med-card .dose-chart th.dose img {
+    width: 0.28in;
+    height: 0.2in;
+}
+.med-card .dose-chart tr {
+    height: 0.21in;
+}
+.med-card .dose-chart td, .med-card .dose-chart th {
+    border: 2pt solid black;
+    overflow: hidden;
+    white-space:nowrap;       
+}
+
+.med-card .dose-chart td.dose {
+    vertical-align: center;
+    text-align: center;
+}
+
+.med-card .dose-chart th.medication {
+    border-top: none;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.med-card .dose-chart td.medication {
+    padding-left: 5pt;
+}
+
+.med-card .page.second .column {
+    width: 3.7in;
+}
+
+.intro {
+    display: none;
+    text-align: center;
+    margin-top: 2em;
+}
+
+.intro h1 {
+    font-size: 24pt;
+}
+
+@media print {
+  .med-card-editor {
+    display: none;
+  }
+}
+@media screen {
+    .intro {
+        display: block;
+    }
+    body {
+        background-color: #e0e0e0;
+    }
+    .med-card {
+        text-align: center;
+        margin-top: 2em;
+    }
+    
+    .med-card .page {
+        text-align: left;
+        display: inline-block;
+    }
+}
