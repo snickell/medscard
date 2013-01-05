@@ -94,6 +94,8 @@ App.MedCard = Ember.Object.extend({
         var regex = /^([\s\S]*)ACTIVE PROBLEMS: ([\s\S]*)Outpatient Medications\s*=====================================================================([\s\S]*)$/;
         window.emrData = emrData;
         window.daRegex = regex;
+        
+        
         var match = regex.exec(emrData);
         
         var allergies = match[1]
@@ -101,7 +103,31 @@ App.MedCard = Ember.Object.extend({
         var meds = match[3];
         
         // Remove extraneous new-lines
-        var meds = meds.replace(/[\n\f\r]+/g, "\n")
+        problems = problems.replace(/[\n\f\r]+/g, "\n");
+        // Split based on '##. ' at the start of lines
+        problems = problems.split(/\n\d\d?[.] /);
+        // Strip new-lines out of individual problems
+        problems = problems.map(function (x) { return x.replace("\n", ""); });
+        // Remove empty problems
+        problems = problems.filter(function (x) { return x.length > 0 });
+        // Parse problems
+        problems = problems.map(function (problem) {
+           var matches = problem.match(/^(.*?)\s*(\*)?\s*(?:\((ICD.+)\))?\s*$/);
+           if (matches) {
+               return {
+                   problem: matches[1],
+                   asterisk: matches[2],
+                   icd: matches[3]                   
+               }
+           } else {
+               return {
+                   problem: matches[1]
+               }
+           }
+        });
+        
+        // Remove extraneous new-lines
+        meds = meds.replace(/[\n\f\r]+/g, "\n")
         // Collapse newlines inside a single med: continued lines are detected by leading four spaces
         meds = meds.replace(/\n    /g, " ");
         // Convert to an array
@@ -110,35 +136,22 @@ App.MedCard = Ember.Object.extend({
         meds = meds.filter(function (x) { return x.length > 0 });
         
         meds = meds.map(function (med) {
-            var matches = med.match(/(.*?)[.]  (.*)/);
-            return {
-                med: matches[1],
-                description: matches[2]
-            } 
+            var matches = med.match(/^(.*?)[.]  (.*)$/);
+            if (matches) {
+                return {
+                    med: matches[1],
+                    description: matches[2]
+                }                
+            } else {
+                return {
+                   med: med,
+                   description: med
+                }
+            }
         });
         
         window.meds = meds;
-        /*
-        Aspirin  81 Mg Ec Tab.  Take one tablet by mouth every day to reduce
-
-
-            risk of heart attack or stroke
-
-
-        Calcium 250mg/vitamin D 125 Unt Tab.  Take 1 tablet by mouth twice a
-
-
-            day
-
-
-        Finasteride 5 Mg Tab.  Take one tablet by mouth every morning before
-
-
-            breakfast for prostate.  any woman who is or may become pregnant
-
-
-            should not handle
-            */
+        window.problems = problems;
     }
 });
 
