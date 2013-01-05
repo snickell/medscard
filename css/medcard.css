@@ -34,6 +34,17 @@
   outline: 5px solid #999;
 }
 
+.med-card-editor .emr-data {
+  background-color: #eee;
+  margin-bottom: 1em;
+  padding: 1em;
+}
+
+.med-card-editor .emr-data textarea {
+  height: 8em;
+  width: 100%;
+}
+
 .med-card-editor .category {
   margin-bottom: 1em;
 }

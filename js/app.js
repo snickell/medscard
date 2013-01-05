@@ -17,7 +17,11 @@ App.Medication = Ember.Object.extend({
     morningDosage: undefined,
     middayDosage: undefined,
     eveningDosage: undefined,
-    nightDosage: undefined
+    nightDosage: undefined,
+    
+    /* Other conditions */
+    useNumerals: false,
+    asNeeded: false
 });
 
 App.Allergy = Ember.Object.extend({
@@ -35,6 +39,7 @@ App.MedCard = Ember.Object.extend({
       this.set('medications', Ember.A(this.get('medications')));
       this.set('problems', Ember.A(this.get('problems')));
       
+      /*
       var allergies = this.get('allergies');
       allergies.pushObject(App.Allergy.create({
           description: "Kryptonite"
@@ -73,6 +78,7 @@ App.MedCard = Ember.Object.extend({
           eveningDosage: App.Dosage.create({ time: "evening", size: 0 }),
           nightDosage: App.Dosage.create({ time: "night", size: 1 })
       }));
+      */
     },
     allergies: undefined,
     medications: undefined,
@@ -83,7 +89,57 @@ App.MedCard = Ember.Object.extend({
     medicationsRightColumn: function () {
         return [];
     }.property('medications'),
-    notes: ""
+    notes: "",
+    insertEMRData: function (emrData) {
+        var regex = /^([\s\S]*)ACTIVE PROBLEMS: ([\s\S]*)Outpatient Medications\s*=====================================================================([\s\S]*)$/;
+        window.emrData = emrData;
+        window.daRegex = regex;
+        var match = regex.exec(emrData);
+        
+        var allergies = match[1]
+        var problems = match[2];
+        var meds = match[3];
+        
+        // Remove extraneous new-lines
+        var meds = meds.replace(/[\n\f\r]+/g, "\n")
+        // Collapse newlines inside a single med: continued lines are detected by leading four spaces
+        meds = meds.replace(/\n    /g, " ");
+        // Convert to an array
+        meds = meds.split("\n");
+        // Remove empty meds
+        meds = meds.filter(function (x) { return x.length > 0 });
+        
+        meds = meds.map(function (med) {
+            var matches = med.match(/(.*?)[.]  (.*)/);
+            return {
+                med: matches[1],
+                description: matches[2]
+            } 
+        });
+        
+        window.meds = meds;
+        /*
+        Aspirin  81 Mg Ec Tab.  Take one tablet by mouth every day to reduce
+
+
+            risk of heart attack or stroke
+
+
+        Calcium 250mg/vitamin D 125 Unt Tab.  Take 1 tablet by mouth twice a
+
+
+            day
+
+
+        Finasteride 5 Mg Tab.  Take one tablet by mouth every morning before
+
+
+            breakfast for prostate.  any woman who is or may become pregnant
+
+
+            should not handle
+            */
+    }
 });
 
 App.MedCardEditorView = Ember.View.extend({
@@ -107,6 +163,12 @@ App.MedCardEditorView = Ember.View.extend({
    },
    print: function () {
        window.print();
+   },
+   emrData: "",
+   insertEMRData: function () {
+       var emrData = this.get('emrData');
+       this.get('content').insertEMRData(emrData);
+       this.set('emrData', "");
    }
 });
 

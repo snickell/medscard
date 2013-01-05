@@ -1,0 +1,69 @@
+
+// Creamy stuff
+if (medication.description.containsAnyOf("apply", "cream", "ointment", "lotion", "shampoo", "gel")) {
+    medication.dose.size = 1;
+}
+
+// Does the doese timing contain a "before meals" style modifier?
+beforeMeals = medication.description.containsAnyOf("ac", "with meals", "before meals");
+beforeMeal = medication.description.containsAnyOf("ac", "with meal", "before meal", "with dinner", "before dinner");
+
+// Dose timing
+if (medication.description.containsAnyOf("bid", "twice daily", "twice a day", "two times daily", "two times a day", "q12",  "q12h")) {
+    medication.dose.inThe.morning = true;
+    
+    if (beforeMeals) {
+        medication.dose.inThe.evening = true;
+    } else {
+        medication.dose.inThe.night = true;
+    }
+} else if (medication.description.containsAnyOf("qhs", "qpm", "each night", "every night", "each evening", "every evening", "at bedtime")) {
+    if (beforeMeal) {
+        medication.dose.inThe.evening = true;
+    } else {
+        medication.dose.inThe.night = true;
+    }
+} else if (medication.description.containsAnyOf("tid", "q8", "q8h", "three times daily", "three times a day")) {
+    medication.dose.inThe.morning = true;
+    medication.dose.inThe.noon = true;
+    
+    if (beforeMeals) {
+        medication.dose.inThe.evening = true;
+    } else {
+        medication.dose.inThe.night = true;
+    }
+} else if (medication.description.containsAnyOf("qid", "q6", "q6h", "four times a day", "four times daily")) {
+    medication.dose.inThe.morning = true;
+    medication.dose.inThe.noon = true;
+    medication.dose.inThe.evening = true;
+    medication.dose.inThe.night = true;
+} else (if medication.description.containsAnyOf("daily", "qam", "each morning", "every morning", "qday", "q24", "qdaily", "q24h")) {
+    // This needs to be last because otherwise 'daily' would match 'twice daily', 'four times daily', etc
+    medication.dose.inThe.morning = true;
+}
+
+if (medication.description.containsAnyOf("prn", "as needed")) {
+    medication.dose.asNeeded = true;
+}
+
+// Should we display as graphics or as numerals?
+if (medication.description.containsAnyOf("inject")) {
+    medication.dose.displayAsGraphicalPills = false;
+} else if (medication.dose.size.equalsAnyOf(0, 0.5, 1, 1.5, 2, 2.5, 3, 4)) {
+    medication.dose.displayAsGraphicalPills = true;
+} else {
+    medication.dose.displayAsGraphicalPills = false;
+}
+
+
+Also, if the words apply, cream, ointment, lotion, shampoo or gel are anywhere in the line, it should be just a single pill at whatever frequency is written. 
+
+** Daily or qam or each morning or every morning or qday or q24 or qdaily or q24h = morning
+** Bid or twice daily or twice a day or two times daily or two times a day or q12 or q12h = morning and night (unless the words ac or with meals or before meals, then = morning and evening)
+** Qhs or qpm or each night or every night or each evening or every evening or at bedtime = night (unless the words ac or with meal or before meal or with dinner or before dinner, then = evening)
+** Tid or q8 or q8h or three times daily or three times a day = morning noon and night (unless the words ac or with meals or before meals, then = morning noon and evening)
+** Qid or q6 or q6h or four times a day or four times daily = all four times
+
+Confusing enough for you?
+
+And finally, prn or as needed should be identified somehow, eg grouped into a category at the end with the words AS NEEDED on the line above.

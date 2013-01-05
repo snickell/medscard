@@ -23,8 +23,16 @@
   <script type="text/x-handlebars" data-template-name="med-card-editor">
     <div class="print-bar">
         <h1>Edit Med Card</h1>
+
         <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
     </div>
+    
+
+    <div class="emr-data">
+        {{view Ember.TextArea valueBinding="view.emrData"}}<br/>
+        <input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
+    </div>    
+    
       
     <table width="100%">
         <tr>
