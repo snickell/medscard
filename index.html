@@ -29,6 +29,7 @@
     
 
     <div class="emr-data">
+        <i>Paste EMR output here:</i><br/>
         {{view Ember.TextArea valueBinding="view.emrData"}}<br/>
         <input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
     </div>    

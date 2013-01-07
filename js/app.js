@@ -94,7 +94,7 @@ App.Medication.reopenClass({
            takeInThe('midday');
            takeInThe('evening');
            takeInThe('night');
-       } else if (instructionsContain(["daily", "qam", "each morning", "every morning", "qday", "q24", "qdaily", "q24h"])) {
+       } else if (instructionsContain(["daily", "qam", "each morning", "every morning", "qday", "q24", "qdaily", "q24h", /* confirm with simha: */ "every day"])) {
            // This needs to be last because otherwise 'daily' would match 'twice daily', 'four times daily', etc
            takeInThe('morning');
        }
