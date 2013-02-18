@@ -20,10 +20,11 @@
   <![endif]-->
 </head>
 <body>
+    {% raw %}
+    
   <script type="text/x-handlebars" data-template-name="med-card-editor">
     <div class="print-bar">
         <h1>Edit Med Card</h1>
-
         <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
     </div>
     
@@ -185,6 +186,8 @@
     {{view App.MedCardEditorView contentBinding="content"}}
     {{view App.MedCardView contentBinding="content"}}
   </script>
+  
+  {% endraw %}
 
   <!-- The missing protocol means that it will match the current protocol, either http or https. If running locally, we use the local jQuery. -->
   <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>

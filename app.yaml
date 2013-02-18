@@ -17,10 +17,10 @@ handlers:
 
 - url: /css
   static_dir: css
-  
-- url: /
-  static_files: index.html
-  upload: index.html
+
+# - url: /
+#  static_files: index.html
+#  upload: index.html
 
 - url: .*
   script: main.app
@@ -30,3 +30,5 @@ libraries:
   version: "2.5.1"
 - name: PIL
   version: "1.1.7"
+- name: jinja2
+  version: latest

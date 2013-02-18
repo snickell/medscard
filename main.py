@@ -14,25 +14,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-import webapp2
+import os
 
+import webapp2
+from google.appengine.ext import db
+from google.appengine.api import users
+
+import jinja2
+import os
+
+jinja_environment = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)))
+
+class UserPrefs(db.Model):
+    userid = db.StringProperty()
+    
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.out.write('Hello world!')
+        user = users.get_current_user()
 
-# 
-# from reportlab.pdfgen import canvas
-# from reportlab.lib.pagesizes import portrait
-# 
-# class PDFHandler(webapp2.RequestHandler):
-#   def get(self):
-#     self.response.headers['Content-Type'] = 'application/pdf'
-#     self.response.headers['Content-Disposition'] = 'attachment; filename=my.pdf'
-#     c = canvas.Canvas(self.response.out, pagesize=portrait)
-# 
-#     c.drawString(100, 100, "Hello world")
-#     c.showPage()
-#     c.save()
+        if user:
+            # self.response.headers['Content-Type'] = 'text/plain'
+            # self.response.out.write('Hello, ' + user.nickname())
+            q = db.GqlQuery("SELECT * FROM UserPrefs WHERE userid = :1", user.user_id())
+            userprefs = q.get()
+            
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+
+            template_values = {
+                'greetings': "From earth",
+                'url': url,
+                'url_linktext': url_linktext,
+            }
+
+            template = jinja_environment.get_template('index.html')
+            self.response.out.write(template.render(template_values))
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
     
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
