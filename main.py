@@ -15,10 +15,12 @@
 # limitations under the License.
 #
 import os
+import logging
 
 import webapp2
 from google.appengine.ext import db
 from google.appengine.api import users
+from google.appengine.api import images
 
 import jinja2
 import os
@@ -28,6 +30,7 @@ jinja_environment = jinja2.Environment(
 
 class UserPrefs(db.Model):
     userid = db.StringProperty()
+    faceplate = db.BlobProperty()
     
 class MainHandler(webapp2.RequestHandler):
     def get(self):
@@ -52,9 +55,49 @@ class MainHandler(webapp2.RequestHandler):
             self.response.out.write(template.render(template_values))
         else:
             self.redirect(users.create_login_url(self.request.uri))
-    
+            
+class UploadFaceplateHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+
+        if user:
+            template_values = {
+                'message': ''
+            }
+            
+            template = jinja_environment.get_template('upload-faceplate.html')
+            self.response.out.write(template.render(template_values))
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
+            
+    def post(self):
+        user = users.get_current_user()
+
+        if user:
+            faceplate = self.request.get('faceplate')
+            
+            q = db.GqlQuery("SELECT * FROM UserPrefs WHERE userid = :1", user.user_id())
+            userprefs = q.get()
+            
+            if userprefs == None:
+                logging.debug("Creating UserPrefs for %s" % (user.user_id()))
+                userprefs = UserPrefs(userid=user.user_id())
+            
+            userprefs.faceplate = db.Blob(faceplate)
+            userprefs.put()
+
+            template_values = {
+                'message' : 'Faceplate changed.'
+            }                    
+            template = jinja_environment.get_template('upload-faceplate.html')
+            self.response.out.write(template.render(template_values))
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
+
+logging.getLogger().setLevel(logging.DEBUG)
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
+    ('/upload-faceplate', UploadFaceplateHandler)
     #('/pdf', PDFHandler)
   ],
   debug=True)
