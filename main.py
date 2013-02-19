@@ -94,10 +94,29 @@ class UploadFaceplateHandler(webapp2.RequestHandler):
         else:
             self.redirect(users.create_login_url(self.request.uri))
 
+class FaceplateHandler(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        
+        if user:
+            self.response.headers['Content-Type'] = 'image/png'
+            q = db.GqlQuery("SELECT * FROM UserPrefs WHERE userid = :1", user.user_id())
+            userprefs = q.get()
+            
+            if userprefs is not None and userprefs.faceplate is not None:
+                self.response.headers['Content-Type'] = 'image/png'
+                self.response.out.write(userprefs.faceplate)
+            else:
+                self.redirect('/images/default-faceplate.png')
+
+        else:
+            self.error(404)
+
 logging.getLogger().setLevel(logging.DEBUG)
 app = webapp2.WSGIApplication([
     ('/', MainHandler),
-    ('/upload-faceplate', UploadFaceplateHandler)
+    ('/upload-faceplate', UploadFaceplateHandler),
+    ('/faceplate', FaceplateHandler)
     #('/pdf', PDFHandler)
   ],
   debug=True)

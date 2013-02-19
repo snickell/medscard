@@ -25,64 +25,68 @@
   <script type="text/x-handlebars" data-template-name="med-card-editor">
     <div class="print-bar">
         <h1>Edit Med Card</h1>
-        <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
+        <div class="controls">
+            <a href="/upload-faceplate" style="margin-right: 2em">Upload New Faceplate</a>
+            <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
+        </div>
     </div>
     
-
-    <div class="emr-data">
-        <i>Paste EMR output here:</i><br/>
-        {{view Ember.TextArea valueBinding="view.emrData"}}<br/>
-        <input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
-    </div>    
+    <div class='edit-column'>
+        <div class="emr-data">
+            <i>Paste EMR output here:</i><br/>
+            {{view Ember.TextArea valueBinding="view.emrData"}}<br/>
+            <input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
+        </div>    
     
       
-    <table width="100%">
-        <tr>
-            <td>
-                <div class="category allergies">
-                    <h2>Allergies</h2>
-                    <ol>
-                    {{#each allergy in allergies}}
-                        <li>{{view Ember.TextField valueBinding="allergy.description"}}</li>
-                    {{/each}}
-                    <input type="submit" class="add-new" {{action "addNewAllergy" target="view"}} value="Add Allergy"/>
-                    </ol>
-                </div>
-    
-                <div class="category problems">
-                    <h2>Problems</h2>
-                    <ol>
-                    {{#each problem in problems}}
-                        <li>{{view Ember.TextField valueBinding="problem.description"}}</li>
-                    {{/each}}
-                    <input type="submit" class="add-new" {{action "addNewProblem" target="view"}} value="Add Problem"/>
-                    </ol>
-                </div>
-    
-                <div class="category notes">
-                    <h2>Notes</h2>
-                    {{view Ember.TextArea valueBinding="notes"}}
-                </div>
-            </td><td>
-                <div class="category medications">
-                    <h2>Medications</h2>
-                    <table>
-                        <tr>
-                            <th class="dose morning"><img src="images/dose-morning.png"/></th>
-                            <th class="dose midday"><img src="images/dose-midday.png"/></th>
-                            <th class="dose evening"><img src="images/dose-evening.png"/></th>
-                            <th class="dose night"><img src="images/dose-night.png"/></th>
-                            <th class="medication">Medication</th>
-                        </tr>
-                        {{#each medication in medications}}
-                            <tr>{{view App.MedicationEditorView contentBinding="medication"}}</tr>
+        <table width="100%">
+            <tr>
+                <td>
+                    <div class="category allergies">
+                        <h2>Allergies</h2>
+                        <ol>
+                        {{#each allergy in allergies}}
+                            <li>{{view Ember.TextField valueBinding="allergy.description"}}</li>
                         {{/each}}
-                    </table>
-                    <input type="submit" class="add-new" {{action "addNewMedication" target="view"}} value="Add Medication"/>
-                </div>
-            </td>
-        </tr>
-    </table>
+                        <input type="submit" class="add-new" {{action "addNewAllergy" target="view"}} value="Add Allergy"/>
+                        </ol>
+                    </div>
+    
+                    <div class="category problems">
+                        <h2>Problems</h2>
+                        <ol>
+                        {{#each problem in problems}}
+                            <li>{{view Ember.TextField valueBinding="problem.description"}}</li>
+                        {{/each}}
+                        <input type="submit" class="add-new" {{action "addNewProblem" target="view"}} value="Add Problem"/>
+                        </ol>
+                    </div>
+    
+                    <div class="category notes">
+                        <h2>Notes</h2>
+                        {{view Ember.TextArea valueBinding="notes"}}
+                    </div>
+                </td><td>
+                    <div class="category medications">
+                        <h2>Medications</h2>
+                        <table>
+                            <tr>
+                                <th class="dose morning"><img src="images/dose-morning.png"/></th>
+                                <th class="dose midday"><img src="images/dose-midday.png"/></th>
+                                <th class="dose evening"><img src="images/dose-evening.png"/></th>
+                                <th class="dose night"><img src="images/dose-night.png"/></th>
+                                <th class="medication">Medication</th>
+                            </tr>
+                            {{#each medication in medications}}
+                                <tr>{{view App.MedicationEditorView contentBinding="medication"}}</tr>
+                            {{/each}}
+                        </table>
+                        <input type="submit" class="add-new" {{action "addNewMedication" target="view"}} value="Add Medication"/>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </div>
   </script>
   
   <script type="text/x-handlebars" data-template-name="dosage">
@@ -121,10 +125,7 @@
       
       <div class="page first">
           <div class="column left">
-              <div class="upload-faceplate">
-                  <a href="/upload-faceplate">Upload New Faceplate</a>
-              </div>       
-              <img class="faceplate" src="images/faceplate.png" />
+              <img class="faceplate" src="/faceplate" />
           </div>
           <div class="column right">
               <div class="sub-column left">

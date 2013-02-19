@@ -2,12 +2,65 @@
 <html>
     <head>
         <title>Upload a New Faceplate</title>
+        <style>
+            body {
+                padding: 50px;
+                padding-top: 20px;
+                max-width: 600px;
+            }
+            form {
+                background-color: #f0f0f0;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                padding: 20px;
+                position: relative;
+                padding-bottom: 30px;
+                display: block;
+            }
+            .button-bar {
+                position: absolute;
+                right: 0px;
+                left: 0px;
+                bottom: 0px;
+                text-align: right;
+                background-color: #222;
+                color: white;
+                padding: 2px;
+            }
+            .button-bar a {
+                color: #999;
+            }
+        </style>
     </head>
     <body>
-        <h1>Message: {{ message }}</h1>
+        {% if message %}
+        <p>
+            <i>{{ message }} <a href="/">back to med card</a></i>
+        </p>
+        {% endif %}
+        
+        <h1>Change your Faceplate Image</h1>
         <form enctype="multipart/form-data" method="post"> 
-            <input type="file" name="faceplate" /> 
-            <input type="submit" value="Change Faceplate" /> 
+            <label>
+                New Faceplate Image:
+                <input type="file" name="faceplate" /> 
+            </label>
+            <br/>&nbsp;<br/>
+            <div class="button-bar">
+                <a href="/" style="margin-right: 1em; font-size: 75%">Cancel</a>
+                <input type="submit" value="Upload New Faceplate" />
+            </div>
         </form>
+        
+        <div class="faceplate-notes">
+            <h3>Notes on Faceplate Image:</h3>
+            Faceplate image should be 526W x 393H pixels, in PNG format. See <a href="/images/example-faceplate.png">the example faceplate</a>, or
+            download <a href="/images/default-faceplate.png">the default faceplate</a> (you can use it as a template).
+        </div>
+        
+        <div class="faceplate-current">
+            <h2>Your Current Faceplate Image:</h2>
+            <img src="/faceplate" />
+        </div>
     </body>
 </html>
