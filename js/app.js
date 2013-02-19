@@ -359,30 +359,31 @@ App.DosageEditorView = Ember.View.extend({
    classNames: ['dosage-editor']
 });
 
-App.ApplicationController = Ember.ObjectController.extend({
-    content: undefined,
+
+App.IndexController = Ember.ObjectController.extend({
+    message: "Hello my dears",
+    content: null,
+    logoutURL: null,
+    todaysDate: null,
     init: function () {
-        this.set('content', App.MedCard.create());
-        window.medCard = this.get('content');
+        this._super();
+        
         this.set('logoutURL', window.logout_url);
         
         var d = new Date();
         var dateString = "" + (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
-        this.set('todaysDate', dateString)
-    },
-    logoutURL: undefined
+        this.set('todaysDate', dateString);
+    }
 });
 
-App.ApplicationView = Ember.View.extend({
-  templateName: 'application'
-});
 
-App.Router = Ember.Router.extend({
-  root: Ember.Route.extend({
-    index: Ember.Route.extend({
-      route: '/'
-    })
-  })
-})
+App.IndexRoute = Ember.Route.extend({
+  setupController: function(controller) {
+    console.log("Setting content to new MedCard()");
+    var medCard = App.MedCard.create();
+    window.debugMedCard = medCard;
+    controller.set('content', medCard);
+  }
+});
 
 App.initialize();
