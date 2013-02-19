@@ -36,7 +36,8 @@ App.Medication.reopenClass({
        
        console.log("Working on ", emrMed.med, " with instructions ", emrMed.instructions);
        
-       var instructions = emrMed.instructions;
+       var instructions = emrMed.instructions.toLowerCase();
+       console.log("Instructions are: ", instructions)
        var doseSize = 1; // Need to parse this shazzle
 
        var containsAnyOf = function (s, phrases) {
@@ -262,7 +263,13 @@ App.MedCard = Ember.Object.extend({
         }
     },
     insertEMRData: function (emrDataString) {
-        var emrData = this.parseEMRData(emrDataString);
+        var emrDate = undefined;
+        try {
+            emrData = this.parseEMRData(emrDataString);
+        } catch (e) {
+            alert("The EMR input failed to parse. \n\nTechnical error message was:\n" + e);
+            return;
+        }
         window.emrData = emrData;
         
         var allergies = this.get('allergies');
