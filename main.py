@@ -49,6 +49,7 @@ class MainHandler(webapp2.RequestHandler):
                 'greetings': "From earth",
                 'url': url,
                 'url_linktext': url_linktext,
+                'logout_url': users.create_logout_url("/")
             }
 
             template = jinja_environment.get_template('index.html')

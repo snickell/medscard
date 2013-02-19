@@ -18,6 +18,10 @@
   <!--[if lt IE 9]>
   <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
   <![endif]-->
+  
+  <script>
+    window.logout_url = '{{ logout_url }}';
+  </script>
 </head>
 <body>
     {% raw %}
@@ -26,7 +30,8 @@
     <div class="print-bar">
         <h1>Edit Med Card</h1>
         <div class="controls">
-            <a href="/upload-faceplate" style="margin-right: 2em">Upload New Faceplate</a>
+            <a href="/upload-faceplate">Upload New Faceplate</a>
+            <a {{bindAttr href="logoutURL"}}>Logout</a>            
             <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
         </div>
     </div>

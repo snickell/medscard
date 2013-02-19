@@ -357,7 +357,9 @@ App.ApplicationController = Ember.ObjectController.extend({
     init: function () {
         this.set('content', App.MedCard.create());
         window.medCard = this.get('content');
-    }
+        this.set('logoutURL', window.logout_url);
+    },
+    logoutURL: undefined
 });
 
 App.ApplicationView = Ember.View.extend({
