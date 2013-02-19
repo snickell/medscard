@@ -358,6 +358,10 @@ App.ApplicationController = Ember.ObjectController.extend({
         this.set('content', App.MedCard.create());
         window.medCard = this.get('content');
         this.set('logoutURL', window.logout_url);
+        
+        var d = new Date();
+        var dateString = "" + (d.getMonth()+1) + "/" + d.getDate() + "/" + d.getFullYear();
+        this.set('todaysDate', dateString)
     },
     logoutURL: undefined
 });
