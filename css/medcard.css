@@ -173,11 +173,12 @@
     overflow: hidden;
 }
     
-.med-card .dose-chart .dose, .med-card .dose-chart th.dose img {
+.med-card .dose-chart .dose {
     width: 0.3in;
 }
 
 .med-card .dose-chart th.dose img {
+    height: 0.2in;
     width: 0.3in;
 }
 
@@ -198,7 +199,7 @@
 
 .med-card .dose-chart th.medication {
     border-top: none;
-    text-align: left;
+    text-align: center;
     text-transform: uppercase;
 }
 
