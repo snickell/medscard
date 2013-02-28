@@ -7,6 +7,8 @@ if (window.console.log == undefined) {
 
 var App = Ember.Application.create();
 
+var NUM_MEDS_PER_COLUMN = 12;
+
 App.Dosage = Ember.Object.extend({
     time: undefined,
     size: undefined
@@ -186,11 +188,11 @@ App.MedCard = Ember.Object.extend({
     medications: undefined,
     problems: undefined,
     medicationsLeftColumn: function () {
-        return this.get('medications');
-    }.property('medications'),
+        return this.get('medications').slice(0, NUM_MEDS_PER_COLUMN);
+    }.property('medications.@each'),
     medicationsRightColumn: function () {
-        return [];
-    }.property('medications'),
+        return this.get('medications').slice(NUM_MEDS_PER_COLUMN);
+    }.property('medications.@each'),
     notes: "",
     parseEMRData: function (emrData) {
         /* First break the file into sections: allergies, problems, meds */
