@@ -2,215 +2,210 @@
 <!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]--> <!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]--> <!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]--> <!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <title>Med Card</title>
-  <meta name="description" content="">
-  <meta name="author" content="">
+	<title>Med Card</title>
+	<meta name="description" content="">
+	<meta name="author" content="">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link rel="shortcut icon" href="/favicon.ico">
-  <link rel="stylesheet" href="css/style.css?v=2">
-  <link rel="stylesheet" href="css/medcard.css?v=2">
-  
-  <!--[if lt IE 9]>
-  <script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-  <![endif]-->
-  
-  <script>
-    window.logout_url = '{{ logout_url }}';
-  </script>
+	<link rel="shortcut icon" href="/favicon.ico">
+	<link rel="stylesheet" href="css/style.css?v=2">
+	<link rel="stylesheet" href="css/medcard.css?v=2">
+	
+	<!--[if lt IE 9]>
+	<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	<script>
+		window.logout_url = '{{ logout_url }}';
+	</script>
 </head>
 <body>
-    {% raw %}
-    
-  <script type="text/x-handlebars" data-template-name="med-card-editor">
-    <div class="print-bar">
-        <h1>Edit Med Card</h1>
-        <div class="controls">
-            <a href="/upload-faceplate">Upload New Faceplate</a>
-            <a {{bindAttr href="logoutURL"}}>Logout</a>            
-            <input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
-        </div>
-    </div>
+		{% raw %}
+		
+	<script type="text/x-handlebars" data-template-name="med-card-editor">
+		<div class="print-bar">
+				<h1>Edit Med Card</h1>
+				<div class="controls">
+						<a href="/upload-faceplate">Upload New Faceplate</a>
+						<a {{bindAttr href="logoutURL"}}>Logout</a>            
+						<input type="submit" class="print" {{action "print" target="view"}} value="Print"/>
+				</div>
+		</div>
 
-    <div class='edit-column'>
-        <div class="emr-data">
-            <i>Paste EMR output here:</i><br/>
-            {{view Ember.TextArea valueBinding="view.emrData"}}<br/>
-            <input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
-        </div>    
+		<div class='edit-column'>
+				<div class="emr-data">
+						<i>Paste EMR output here:</i><br/>
+						{{view Ember.TextArea valueBinding="view.emrData"}}<br/>
+						<input type="submit" {{action "insertEMRData" target="view"}} value="Insert EMR Data"/>
+				</div>    
 
-  
-        <table width="100%">
-            <tr>
-                <td>
-                    <div class="category allergies">
-                        <h2>Allergies</h2>
-                        <ol>
-                        {{#each allergy in content.allergies}}
-                            <li>{{view Ember.TextField valueBinding="allergy.description"}}</li>
-                        {{/each}}
-                        <input type="submit" class="add-new" {{action "addNewAllergy" target="view"}} value="Add Allergy"/>
-                        </ol>
-                    </div>
+	
+				<table width="100%">
+						<tr>
+								<td>
+										<div class="category allergies">
+												<h2>Allergies</h2>
+												<ol>
+												{{#each allergy in content.allergies}}
+														<li>{{view Ember.TextField valueBinding="allergy.description"}}</li>
+												{{/each}}
+												<input type="submit" class="add-new" {{action "addNewAllergy" target="view"}} value="Add Allergy"/>
+												</ol>
+										</div>
 
-                    <div class="category problems">
-                        <h2>Problems</h2>
-                        <ol>
-                        {{#each problem in content.problems}}
-                            <li>{{view Ember.TextField valueBinding="problem.description"}}</li>
-                        {{/each}}
-                        <input type="submit" class="add-new" {{action "addNewProblem" target="view"}} value="Add Problem"/>
-                        </ol>
-                    </div>
+										<div class="category problems">
+												<h2>Problems</h2>
+												<ol>
+												{{#each problem in content.problems}}
+														<li>{{view Ember.TextField valueBinding="problem.description"}}</li>
+												{{/each}}
+												<input type="submit" class="add-new" {{action "addNewProblem" target="view"}} value="Add Problem"/>
+												</ol>
+										</div>
 
-                    <div class="category notes">
-                        <h2>Notes</h2>
-                        {{view Ember.TextArea valueBinding="content.notes"}}
-                    </div>
-                </td><td>
-                    <div class="category medications">
-                        <h2>Medications</h2>
-                        <table>
-                            <tr>
-                                <th class="dose morning"><img src="images/dose-morning.png"/></th>
-                                <th class="dose midday"><img src="images/dose-midday.png"/></th>
-                                <th class="dose evening"><img src="images/dose-evening.png"/></th>
-                                <th class="dose night"><img src="images/dose-night.png"/></th>
-                                <th class="medication">Medication</th>
-                            </tr>
-                            {{#each medication in content.medications}}
-                                <tr>{{view App.MedicationEditorView contentBinding="medication"}}</tr>
-                            {{/each}}
-                        </table>
-                        <input type="submit" class="add-new" {{action "addNewMedication" target="view"}} value="Add Medication"/>
-                    </div>
-                </td>
-            </tr>
-        </table>
-    </div>
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="dosage">
-    {{#if view.renderAsImg}}
-        <img {{bindAttr src="view.imgURL"}}/>
-    {{else}}
-        {{view.content.size}}
-    {{/if}}    
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="medication">
-      <td class="dose">{{view App.DosageView contentBinding="view.content.morningDosage"}}</td>
-      <td class="dose">{{view App.DosageView contentBinding="view.content.middayDosage"}}</td>
-      <td class="dose">{{view App.DosageView contentBinding="view.content.eveningDosage"}}</td>
-      <td class="dose">{{view App.DosageView contentBinding="view.content.nightDosage"}}</td>
-      <td class="medication">{{view.content.description}}</td>
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="medication-editor">
-      <td class="dose">{{view App.DosageEditorView contentBinding="view.content.morningDosage"}}</td>
-      <td class="dose">{{view App.DosageEditorView contentBinding="view.content.middayDosage"}}</td>
-      <td class="dose">{{view App.DosageEditorView contentBinding="view.content.eveningDosage"}}</td>
-      <td class="dose">{{view App.DosageEditorView contentBinding="view.content.nightDosage"}}</td>
-      <td class="medication">{{view Ember.TextField valueBinding="view.content.description"}}</td>
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="dosage-editor">
-    {{view Ember.TextField valueBinding="view.content.size"}}
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="med-card">
-      <div class="intro">
-          <h1>Preview</h1>
-      </div>
-  
-      <div class="page first">
-          <div class="column left">
-              <img class="faceplate" src="/faceplate" />
-          </div>
-          <div class="column right">
-              <div class="sub-column left">
-                  <div class="category allergies">
-                      <h1>Allergies</h1>
-                      <ol>
-                      {{#each allergy in content.allergies}}
-                          <li>{{allergy.description}}</li>
-                      {{/each}}
-                      </ol>
-                  </div>
-                  <div class="category medical-problems">
-                      <h1>Medical Problems</h1>
-                      <ol>
-                      {{#each problem in content.problems}}
-                          <li>{{problem.description}}</li>
-                      {{/each}}
-                      </ol>
-                  </div>
-              </div>
-              <div class="sub-column right">
-                  <div class="category notes">
-                      <h1>Notes</h1>
-                      <p>{{content.notes}}</p>
-                  </div>
-              </div>
-          </div>
-          <div class="created-on-date">created on {{ todaysDate }}</div>
-      </div>
-      <div class="page second">
-          <div class="column left">
-              <table class="dose-chart" width="100%">
-                  <tr>
-                      <th class="dose morning"><img src="images/dose-morning.png"/></th>
-                      <th class="dose midday"><img src="images/dose-midday.png"/></th>
-                      <th class="dose evening"><img src="images/dose-evening.png"/></th>
-                      <th class="dose night"><img src="images/dose-night.png"/></th>
-                      <th class="medication">Medication</th>
-                  </tr>
-                  {{#each medication in content.medicationsLeftColumn}}
-                    {{view App.MedicationView contentBinding="medication"}}
-                  {{/each}}
-              </table>
-          </div>
-          <div class="column right">
-            <table class="dose-chart" width="100%">
-              <tr>
-                  <th class="dose morning"><img src="images/dose-morning.png"/></th>
-                  <th class="dose midday"><img src="images/dose-midday.png"/></th>
-                  <th class="dose evening"><img src="images/dose-evening.png"/></th>
-                  <th class="dose night"><img src="images/dose-night.png"/></th>
-                  <th class="medication">Medication</th>
-              </tr>
-              {{#each medication in content.medicationsRightColumn}}
-                {{view App.MedicationView contentBinding="medication"}}
-              {{/each}}
-          </table>
-        </div>
-      </div>
-  </script>
-  
-  <script type="text/x-handlebars" data-template-name="index">
-    {{view App.MedCardEditorView contentBinding="content"}}
-    {{view App.MedCardView contentBinding="content"}}
-  </script>
-  
-  {% endraw %}
+										<div class="category notes">
+												<h2>Notes</h2>
+												{{view Ember.TextArea valueBinding="content.notes"}}
+										</div>
+								</td><td>
+										<div class="category medications">
+												<h2>Medications</h2>
+												<table>
+														<tr>
+																<th class="dose morning"><img src="images/dose-morning.png"/></th>
+																<th class="dose midday"><img src="images/dose-midday.png"/></th>
+																<th class="dose evening"><img src="images/dose-evening.png"/></th>
+																<th class="dose night"><img src="images/dose-night.png"/></th>
+																<th class="medication">Medication</th>
+														</tr>
+														{{#each medication in content.medications}}
+																<tr>{{view App.MedicationEditorView contentBinding="medication"}}</tr>
+														{{/each}}
+												</table>
+												<input type="submit" class="add-new" {{action "addNewMedication" target="view"}} value="Add Medication"/>
+										</div>
+								</td>
+						</tr>
+				</table>
+		</div>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="dosage">
+		{{#if view.renderAsImg}}
+				<img {{bindAttr src="view.imgURL"}}/>
+		{{else}}
+				{{view.content.size}}
+		{{/if}}    
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="medication">
+			<td class="dose">{{view App.DosageView contentBinding="view.content.morningDosage"}}</td>
+			<td class="dose">{{view App.DosageView contentBinding="view.content.middayDosage"}}</td>
+			<td class="dose">{{view App.DosageView contentBinding="view.content.eveningDosage"}}</td>
+			<td class="dose">{{view App.DosageView contentBinding="view.content.nightDosage"}}</td>
+			<td class="medication">{{view.content.description}}</td>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="medication-editor">
+			<td class="dose">{{view App.DosageEditorView contentBinding="view.content.morningDosage"}}</td>
+			<td class="dose">{{view App.DosageEditorView contentBinding="view.content.middayDosage"}}</td>
+			<td class="dose">{{view App.DosageEditorView contentBinding="view.content.eveningDosage"}}</td>
+			<td class="dose">{{view App.DosageEditorView contentBinding="view.content.nightDosage"}}</td>
+			<td class="medication">{{view Ember.TextField valueBinding="view.content.description"}}</td>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="dosage-editor">
+		{{view Ember.TextField valueBinding="view.content.size"}}
+	</script>
 
-  <!-- The missing protocol means that it will match the current protocol, either http or https. If running locally, we use the local jQuery. -->
-  <!--
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
-  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
-  -->
-  <!--
-  <script src="js/libs/handlebars-1.0.0.beta.6.js"></script>
-  <script src="js/libs/ember-1.0.0-pre.2.min.js"></script>
-  -->
-  <script src="js/libs/jquery-1.9.1.min.js"></script>
-  <script src="js/libs/handlebars-1.0.0-rc.3.js"></script>
-  <script src="js/libs/ember-1.0.0-rc.1.js"></script>
+	<script type="text/x-handlebars" data-template-name="dose-chart">
+        <thead>
+				<tr>
+						<th class="dose morning"><img src="images/dose-morning.png"/></th>
+						<th class="dose midday"><img src="images/dose-midday.png"/></th>
+						<th class="dose evening"><img src="images/dose-evening.png"/></th>
+						<th class="dose night"><img src="images/dose-night.png"/></th>
+						<th class="medication">Medication</th>
+				</tr>
+        </thead>
+        <tbody>
+				{{#each medication in view.medications}}
+					{{view App.MedicationView contentBinding="medication"}}
+				{{/each}}
+        </tbody>
+	</script>
 
-  <script src="js/app.js"></script>
+	<script type="text/x-handlebars" data-template-name="med-card">
+			<div class="intro">
+					<h1>Preview</h1>
+			</div>
+	
+			<div class="page first">
+					<div class="column left">
+							<img class="faceplate" src="/faceplate" />
+					</div>
+					<div class="column right">
+							<div class="sub-column left">
+									<div class="category allergies">
+											<h1>Allergies</h1>
+											<ol>
+											{{#each allergy in content.allergies}}
+													<li>{{allergy.description}}</li>
+											{{/each}}
+											</ol>
+									</div>
+									<div class="category medical-problems">
+											<h1>Medical Problems</h1>
+											<ol>
+											{{#each problem in content.problems}}
+													<li>{{problem.description}}</li>
+											{{/each}}
+											</ol>
+									</div>
+							</div>
+							<div class="sub-column right">
+									<div class="category notes">
+											<h1>Notes</h1>
+											<p>{{content.notes}}</p>
+									</div>
+							</div>
+					</div>
+					<div class="created-on-date">created on {{ todaysDate }}</div>
+			</div>
+			<div class="page second">
+					<div class="column left">
+							{{view App.DoseChartView medicationsBinding="content.medicationsLeftColumn"}}
+					</div>
+					<div class="column right">
+							{{view App.DoseChartView medicationsBinding="content.medicationsRightColumn"}}					
+					</div>
+			</div>
+	</script>
+	
+	<script type="text/x-handlebars" data-template-name="index">
+		{{view App.MedCardEditorView contentBinding="content"}}
+		{{view App.MedCardView contentBinding="content"}}
+	</script>
+	
+	{% endraw %}
+
+	<!-- The missing protocol means that it will match the current protocol, either http or https. If running locally, we use the local jQuery. -->
+	<!--
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.2.min.js"><\/script>')</script>
+	-->
+	<!--
+	<script src="js/libs/handlebars-1.0.0.beta.6.js"></script>
+	<script src="js/libs/ember-1.0.0-pre.2.min.js"></script>
+	-->
+	<script src="js/libs/jquery-1.9.1.min.js"></script>
+	<script src="js/libs/handlebars-1.0.0-rc.3.js"></script>
+	<script src="js/libs/ember-1.0.0-rc.1.js"></script>
+
+	<script src="js/app.js"></script>
 </body>
 </html>

@@ -329,6 +329,14 @@ App.MedCardView = Ember.View.extend({
    classNames: ["med-card"]
 });
 
+App.DoseChartView = Ember.View.extend({
+    medications: null,
+    classNames: "dose-chart",
+    templateName: "dose-chart",
+    tagName: "table"
+});
+
+
 App.MedicationView = Ember.View.extend({
     content: undefined,
     templateName: "medication",

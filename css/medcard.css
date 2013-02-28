@@ -149,8 +149,14 @@
 
 .med-card .dose-chart {
     height: 100%;
+    width: 100%;
     border-collapse:collapse;
     border-bottom: 2pt solid black;
+}
+
+.med-card .dose-chart thead tr {
+  vertical-align: bottom;
+  line-height: 0;
 }
 
 .med-card .dose-chart tr.even {
@@ -164,20 +170,21 @@
 }
 
 .med-card .dose-chart th {
-    height: 10px;
     overflow: hidden;
 }
     
-.med-card .dose-chart th.dose {
-    width: 0.28in;
+.med-card .dose-chart .dose, .med-card .dose-chart th.dose img {
+    width: 0.3in;
 }
+
 .med-card .dose-chart th.dose img {
-    width: 0.28in;
-    height: 0.2in;
+    width: 0.3in;
 }
+
 .med-card .dose-chart tr {
     height: 0.21in;
 }
+
 .med-card .dose-chart td, .med-card .dose-chart th {
     border: 2pt solid black;
     overflow: hidden;
@@ -185,13 +192,13 @@
 }
 
 .med-card .dose-chart td.dose {
-    vertical-align: center;
+    vertical-align: middle;
     text-align: center;
 }
 
 .med-card .dose-chart th.medication {
     border-top: none;
-    text-align: center;
+    text-align: left;
     text-transform: uppercase;
 }
 
