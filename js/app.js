@@ -128,7 +128,7 @@ App.Problem = Ember.Object.extend({
 App.Problem.reopenClass({
    createFromEMRParse: function (emrProblem) {
        var problem = App.Medication.create({
-           description: emrProblem.problem,
+           description: emrProblem.problem
        });
        return problem;
    }
@@ -361,7 +361,6 @@ App.DosageEditorView = Ember.View.extend({
 
 
 App.IndexController = Ember.ObjectController.extend({
-    message: "Hello my dears",
     content: null,
     logoutURL: null,
     todaysDate: null,
@@ -379,7 +378,6 @@ App.IndexController = Ember.ObjectController.extend({
 
 App.IndexRoute = Ember.Route.extend({
   setupController: function(controller) {
-    console.log("Setting content to new MedCard()");
     var medCard = App.MedCard.create();
     window.debugMedCard = medCard;
     controller.set('content', medCard);
