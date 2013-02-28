@@ -27,14 +27,20 @@ App.Medication = Ember.Object.extend({
 });
 
 App.Medication.reopenClass({
+  createEmptyMed: function (description) {
+    return App.Medication.create({
+               description: description,
+               morningDosage: App.Dosage.create({ time: "morning", size: 0 }),
+               middayDosage: App.Dosage.create({ time: "midday", size: 0 }),
+               eveningDosage: App.Dosage.create({ time: "evening", size: 0. }),
+               nightDosage: App.Dosage.create({ time: "night", size: 0 })
+    });
+  }
+});
+
+App.Medication.reopenClass({
    createFromEMRParse: function (emrMed) {
-       var med = App.Medication.create({
-           description: emrMed.med,
-           morningDosage: App.Dosage.create({ time: "morning", size: 0 }),
-           middayDosage: App.Dosage.create({ time: "midday", size: 0 }),
-           eveningDosage: App.Dosage.create({ time: "evening", size: 0. }),
-           nightDosage: App.Dosage.create({ time: "night", size: 0 })
-       });
+       var med = App.Medication.createEmptyMed(emrMed.med);
        
        console.log("Working on ", emrMed.med, " with instructions ", emrMed.instructions);
        
@@ -136,6 +142,13 @@ App.Problem.reopenClass({
    }
 });
 
+function padWithEmptyMeds(meds, numMedsTotal) {
+  var numMedsToAdd = numMedsTotal - meds.get('length');
+  for (var i=0; i < numMedsToAdd; i++) {
+    meds.pushObject(App.Medication.createEmptyMed());
+  }
+}
+
 App.MedCard = Ember.Object.extend({
     description: "Hello world",
     init: function () {
@@ -188,10 +201,14 @@ App.MedCard = Ember.Object.extend({
     medications: undefined,
     problems: undefined,
     medicationsLeftColumn: function () {
-        return this.get('medications').slice(0, NUM_MEDS_PER_COLUMN);
+        var meds = this.get('medications').slice(0, NUM_MEDS_PER_COLUMN);
+        padWithEmptyMeds(meds, NUM_MEDS_PER_COLUMN);
+        return meds;
     }.property('medications.@each'),
     medicationsRightColumn: function () {
-        return this.get('medications').slice(NUM_MEDS_PER_COLUMN);
+        var meds = this.get('medications').slice(NUM_MEDS_PER_COLUMN);
+        padWithEmptyMeds(meds, NUM_MEDS_PER_COLUMN);
+        return meds;
     }.property('medications.@each'),
     notes: "",
     parseEMRData: function (emrData) {

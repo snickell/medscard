@@ -154,6 +154,19 @@
     border-bottom: 2pt solid black;
 }
 
+.med-card .column.left .dose-chart th.dose {
+  border-left-width: 0;
+}
+
+.med-card .dose-chart .medication {
+  border-right-width: 0;
+}
+
+.med-card .dose-chart th.dose {
+  border-top-width: 0;
+}
+
+
 .med-card .dose-chart thead tr {
   vertical-align: bottom;
   line-height: 0;
